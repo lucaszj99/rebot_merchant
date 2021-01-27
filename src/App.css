@@ -11,15 +11,19 @@
 }
 
 .footer {
-  background-color: #d1c4e9;
+  background-color: #26defb;
   margin: 0px auto;
   padding: 20px 0px 20px 0px;
 }
-.jumbotron {
-  padding: 70px 30px 70px 30px;
-  margin: 0px auto;
-  background: #9575cd;
-  color: floralwhite;
+
+.jumbotron-header {
+  color: #fff;
+  background-image: url(/assets/images/backgroundbanner.png);
+  max-width: 100%;
+  max-height: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 address {
@@ -29,5 +33,95 @@ address {
 }
 
 .navbar-dark {
-  background-color: #512da8;
+  background-color: #2699fb;
+}
+
+.sidebar {
+  top: 0;
+  left: 0;
+  min-height: 100vh;
+  color: #fff;
+}
+
+.title {
+  font-family: "Lusitana", serif;
+  font-size: 48px;
+  color: #030068;
+}
+
+.nav-link-active {
+  background-color: #030068;
+  border-radius: 25px 25px 25px 25px;
+}
+
+.card {
+  border: 2px solid grey;
+  border-radius: 15px;
+}
+
+.card-title {
+  font-family: "Lusitana", serif;
+  font-size: 24px;
+  color: #030068;
+}
+
+.card-text {
+  font-family: "Lusitana", serif;
+  font-size: 24px;
+  color: #030068;
+  text-align: center;
+}
+
+.content-bg {
+  background-color: #f0eded;
+}
+
+.overlay {
+  border-radius: 5px 5px 5px 5px;
+  min-height: 80vh;
+  max-width: 100%;
+  max-height: 100%;
+}
+.headerstyle {
+  font-family: "Lusitana", serif;
+  font-size: 24px;
+  color: #030068;
+}
+
+.labelstyle {
+  font-family: "Lusitana", serif;
+  font-size: 20px;
+  color: #030068;
+}
+
+.textstyle {
+  font-family: "Lusitana", serif;
+  font-size: 20px;
+  color: #000000;
+}
+
+.card-textstyle {
+  font-family: "Lusitana", serif;
+  font-size: 12px;
+  color: #000000;
+}
+
+.jumbotron-intro {
+  color: #000000;
+  background-image: url(/assets/images/introbanner.png);
+  max-width: 100%;
+  max-height: 100%;
+  background-size: cover;
+  min-height: 50vh;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.login-header {
+  border: 0px;
+  padding: 2em;
+}
+
+.error {
+  color: red;
 }
