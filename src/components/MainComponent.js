@@ -1,9 +1,5 @@
 import React, { Component } from "react";
 import Home from "./HomeComponent";
-import Menu from "./MenuComponent";
-import About from "./AboutComponent";
-import Dishdetail from "./DishdetailComponent";
-import Contact from "./ContactComponent";
 import Dashboard from "./DashboardComponent";
 import Profile from "./ProfileComponent";
 import Qrcode from "./QrcodeComponent";
@@ -19,17 +15,7 @@ import store from "../redux/configureStore";
 import axios from "axios";
 import AuthRoute from "../util/AuthRoute";
 
-const mapStateToProps = (state) => {
-  return {
-    dishes: state.dishes,
-    comments: state.comments,
-    promotions: state.promotions,
-    leaders: state.leaders,
-    screams: null,
-  };
-};
-
-const token = localStorage.FBIdtoken;
+const token = localStorage.getItem("FBIdToken");
 if (token) {
   const decodedToken = jwtDecode(token);
   if (decodedToken.exp * 1000 < Date.now()) {
@@ -40,45 +26,19 @@ if (token) {
     axios.defaults.headers.common["Authorization"] = token;
     store.dispatch(getPremiseData());
   }
+  console.log("run");
+} else {
+  console.log("checking fail");
 }
-
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
 const mapDispatchToProps = (dispatch) => ({});
 
 class Main extends Component {
-  componentDidMount() {
-    // axios
-    //   .get("/screams")
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     this.setState({
-    //       screams: res.data,
-    //     });
-    //   })
-    //   .catch((err) => console.log(err));
-  }
-
   render() {
     const HomePage = () => {
       return <Home history={this.props.history} />;
-    };
-
-    const DishWithId = ({ match }) => {
-      return (
-        <Dishdetail
-          dish={
-            this.props.dishes.dishes.filter(
-              (dish) => dish.id === parseInt(match.params.dishId, 10)
-            )[0]
-          }
-          isLoading={this.props.dishes.isLoading}
-          errMess={this.props.dishes.errMess}
-          comments={this.props.comments.comments.filter(
-            (comment) => comment.dishId === parseInt(match.params.dishId, 10)
-          )}
-          commentsErrMess={this.props.comments.errMess}
-          postComment={this.props.postComment}
-        />
-      );
     };
 
     return (
@@ -86,32 +46,11 @@ class Main extends Component {
         <Switch>
           <Route path="/home" component={HomePage} />
           <Route path="/dashboard" component={Dashboard} />
-          <Route
-            exact
-            path="/menu"
-            component={() => <Menu dishes={this.props.dishes} />}
-          />
-          <Route path="/menu/:dishId" component={DishWithId} />
-          <Route
-            exact
-            path="/contactus"
-            component={() => (
-              <Contact
-                resetFeedbackForm={this.props.resetFeedbackForm}
-                postFeedback={this.props.postFeedback}
-              />
-            )}
-          />
-          <Route
-            exact
-            path="/aboutus"
-            component={() => <About leaders={this.props.leaders} />}
-          />
           <AuthRoute exact path="/dashboard" component={() => <Dashboard />} />
-          <Route exact path="/profile" component={Profile} />
+          <AuthRoute exact path="/profile" component={Profile} />
           <AuthRoute exact path="/qrcode" component={() => <Qrcode />} />
-          <AuthRoute exact path="/record" component={() => <Record />} />
-          <AuthRoute exact path="/queue" component={() => <Queue />} />
+          <Route exact path="/record" component={() => <Record />} />
+          <Route exact path="/queue" component={() => <Queue />} />
           <Route
             exact
             path="/register"

@@ -1,26 +1,26 @@
 import * as ActionType from "../ActionTypes";
 
 const initialState = {
-  authenticated: false,
+  records: [],
   loading: false,
+  size: null,
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case ActionType.SET_AUTHENTICATED:
+    case ActionType.SET_RECORDS:
       return {
         ...state,
-        authenticated: true,
+        loading: false,
+        records: action.payload,
       };
-    case ActionType.SET_UNAUTHENTICATED:
-      return initialState;
-    case ActionType.SET_USER:
+    case ActionType.SET_TODAYRECORDS:
       return {
-        authenticated: true,
+        ...state,
         loading: false,
         ...action.payload,
       };
-    case ActionType.LOADING_USER:
+    case ActionType.LOADING_RECORDS:
       return {
         ...state,
         loading: true,

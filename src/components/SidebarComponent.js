@@ -1,16 +1,9 @@
 import React, { Component } from "react";
-import {
-  Navbar,
-  NavbarBrand,
-  Nav,
-  NavbarToggler,
-  Collapse,
-  NavItem,
-  Button,
-} from "reactstrap";
+import { Navbar, NavbarBrand, Nav, NavbarToggler, Collapse } from "reactstrap";
 import { NavLink } from "react-router-dom";
-import Home from "./HomeComponent";
-import { findAllByTestId } from "@testing-library/react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { logoutUser } from "../redux/actions/userAction";
 class Sidebar extends Component {
   constructor(props) {
     super(props);
@@ -23,10 +16,6 @@ class Sidebar extends Component {
     this.setState({
       isNavOpen: !this.state.isNavOpen,
     });
-  }
-
-  test() {
-    window.location.reload();
   }
 
   render() {
@@ -87,7 +76,11 @@ class Sidebar extends Component {
                       <div className="fa fa-clipboard fa-lg mr-2 col-4"></div>
                       Record
                     </NavLink>
-                    <NavLink className="nav-link text-light" to="/">
+                    <NavLink
+                      className="nav-link text-light"
+                      to="/"
+                      onClick={this.props.logoutUser}
+                    >
                       <div className="fa fa-sign-out fa-lg mr-2 col-4"></div>
                       Logout
                     </NavLink>
@@ -101,4 +94,12 @@ class Sidebar extends Component {
     );
   }
 }
-export default Sidebar;
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
+
+Sidebar.propTypes = {
+  user: PropTypes.object.isRequired,
+};
+const mapActionToProps = { logoutUser };
+export default connect(mapStateToProps, mapActionToProps)(Sidebar);

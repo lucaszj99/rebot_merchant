@@ -1,13 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Loading } from "./LoadingComponent";
 import { signupUser } from "../redux/actions/userAction";
 
 import {
   Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
   FormGroup,
   Form,
   Label,
@@ -71,9 +67,6 @@ class Register extends Component {
   };
   render() {
     const { errors } = this.state;
-    const {
-      UI: { loading },
-    } = this.props;
     return (
       <div className="row">
         <div className="col-12 pl-5 navbar-dark">

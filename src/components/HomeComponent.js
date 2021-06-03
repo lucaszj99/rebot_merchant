@@ -1,16 +1,5 @@
 import React, { Component } from "react";
-import {
-  Card,
-  CardImg,
-  CardText,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  Jumbotron,
-} from "reactstrap";
-import { Loading } from "./LoadingComponent";
-import { baseUrl } from "../shared/baseUrl";
-import { FadeTransform } from "react-animation-components";
+import { Jumbotron } from "reactstrap";
 import Header from "./HeaderComponent";
 import Footer from "./FooterComponent";
 
@@ -41,7 +30,11 @@ class Home extends Component {
         <Jumbotron className="m-0">
           <div className="container">
             <div className="row">
-              <img src="assets/images/objectiveimg.jpg" className="col-4" />
+              <img
+                src="assets/images/objectiveimg.jpg"
+                alt="objective background"
+                className="col-4"
+              />
               <div className="col-8">
                 <h1>
                   <u>Objective</u>

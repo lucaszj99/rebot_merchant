@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-import { Loading } from "./LoadingComponent";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import { updatePremiseData } from "../redux/actions/userAction";
+import {
+  updatePremiseData,
+  getPremiseData,
+  uploadImage,
+} from "../redux/actions/userAction";
 import {
   Button,
   Modal,
@@ -39,6 +41,9 @@ class Profile extends Component {
     };
     this.toggleModal = this.toggleModal.bind(this);
   }
+  componentDidMount() {
+    this.props.getPremiseData();
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.UI.errors) {
       this.setState({ errors: nextProps.UI.errors });
@@ -55,7 +60,10 @@ class Profile extends Component {
       [event.target.name]: event.target.value,
     });
   };
-
+  handleEditPicture = () => {
+    const fileInput = document.getElementById("imageInput");
+    fileInput.click();
+  };
   handleUpdateProfile = (event) => {
     event.preventDefault();
     const profileData = {
@@ -74,6 +82,10 @@ class Profile extends Component {
       description: this.state.description,
     };
     this.props.updatePremiseData(profileData);
+    this.setState({
+      isModalOpen: !this.state.isModalOpen,
+    });
+    this.props.getPremiseData();
   };
 
   handleEdit = () => {
@@ -97,6 +109,13 @@ class Profile extends Component {
     this.handleEdit();
   };
 
+  handleImageChange = (event) => {
+    const image = event.target.files[0];
+    const formData = new FormData();
+    formData.append("image", image, image.name);
+    this.props.uploadImage(formData);
+  };
+
   render() {
     const {
       user: {
@@ -104,22 +123,19 @@ class Profile extends Component {
         username,
         imageUrl,
         email,
-        loading,
-        authenticated,
         occupancyLimit,
         postcode,
         description,
         state,
         city,
+        loading,
         operationStart,
         operationEnd,
         address,
         contact,
       },
     } = this.props;
-    const { errors } = this.state;
-    console.log(this.props.user.username);
-    let profileMarkUp = !loading ? (
+    let profileMarkUp = (
       <div className="row">
         <Sidebar />
         <div className="col-10 p-5 content-bg">
@@ -135,7 +151,19 @@ class Profile extends Component {
                 </Button>
               </div>
               <div className="col-12 headerstyle p-2 mb-2">
-                <img src={imageUrl} height="400" width="80%" alt="profile" />
+                <img src={imageUrl} height="600" width="80%" alt="profile" />
+                <input
+                  type="file"
+                  id="imageInput"
+                  hidden="hidden"
+                  onChange={this.handleImageChange}
+                />
+
+                <div className="col">
+                  <Button onClick={this.handleEditPicture} className="button">
+                    <span className="fa fa-edit fa-lg mr-2"></span>Upload Image
+                  </Button>
+                </div>
               </div>
               <div className="col-3 labelstyle p-2">Username</div>
               <div className="col-9 textstyle p-2">{username}</div>
@@ -187,6 +215,7 @@ class Profile extends Component {
                 </Label>
                 <Col sm={10}>
                   <Input
+                    readOnly
                     type="email"
                     name="email"
                     id="accEmail"
@@ -325,10 +354,8 @@ class Profile extends Component {
           </ModalBody>
         </Modal>
       </div>
-    ) : (
-      <p>loading...</p>
     );
-    return profileMarkUp;
+    return loading !== true ? profileMarkUp : <p>Loading</p>;
   }
 }
 const mapStateToProps = (state) => ({
@@ -339,4 +366,10 @@ const mapStateToProps = (state) => ({
 Profile.propTypes = {
   user: PropTypes.object.isRequired,
 };
-export default connect(mapStateToProps, { updatePremiseData })(Profile);
+
+const mapActionToProps = {
+  updatePremiseData,
+  getPremiseData,
+  uploadImage,
+};
+export default connect(mapStateToProps, mapActionToProps)(Profile);

@@ -58,6 +58,7 @@ export const getPremiseData = () => (dispatch) => {
         type: ActionType.SET_USER,
         payload: res.data,
       });
+      localStorage.setItem("USER_DETAIL", JSON.stringify(res.data));
     })
     .catch((err) => console.log(err));
 };
@@ -71,6 +72,17 @@ export const updatePremiseData = (profileData) => (dispatch) => {
         type: ActionType.SET_USER,
         payload: res.data,
       });
+      dispatch(getPremiseData());
+    })
+    .catch((err) => console.log(err));
+};
+
+export const uploadImage = (formData) => (dispatch) => {
+  dispatch({ type: ActionType.LOADING_USER });
+  axios
+    .post("/user/image", formData)
+    .then(() => {
+      dispatch(getPremiseData());
     })
     .catch((err) => console.log(err));
 };

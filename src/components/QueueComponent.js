@@ -9,21 +9,73 @@ import {
   Label,
 } from "reactstrap";
 import Sidebar from "./SidebarComponent";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { getPremiseQueue, removeFromQueue } from "../redux/actions/queueAction";
 class Queue extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isModalOpen: false,
+      queueList: [],
+      posSelected: "",
+      userSelected: "",
     };
     this.toggleModal = this.toggleModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
+  }
+  componentDidMount() {
+    this.props.getPremiseQueue();
+    this.setState({
+      queueList: this.props.queues.queueRecord,
+    });
   }
 
-  toggleModal() {
+  handleRemove(event) {
+    event.preventDefault();
+    const posData = {
+      pos: this.state.posSelected,
+    };
+    this.props.removeFromQueue(posData);
+    this.props.getPremiseQueue();
+  }
+  toggleModal(selectedQueue) {
     this.setState({
       isModalOpen: !this.state.isModalOpen,
+      posSelected: selectedQueue.pos,
+      userSelected: selectedQueue.checkInUser,
+    });
+  }
+  closeModal() {
+    this.setState({
+      isModalOpen: false,
     });
   }
   render() {
+    const { queues, loading, queueCount } = this.props.queues;
+    let QueueList = !loading ? (
+      queueCount !== 0 ? (
+        queues.map((queue, index) => (
+          <tr key={queue.id}>
+            <th scope="row">{queue.pos}</th>
+            <td>{queue.checkInUser}</td>
+            <td>{queue.enteredAt}</td>
+            <td>
+              <Button color="danger" onClick={() => this.toggleModal(queue)}>
+                <span className="fa fa-times"></span>
+              </Button>
+            </td>
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="4">No Record Found</td>
+        </tr>
+      )
+    ) : (
+      <p>Loading</p>
+    );
     return (
       <div className="row">
         <Sidebar />
@@ -33,7 +85,9 @@ class Queue extends Component {
           </div>
           <div className="overlay bg-light">
             <div className="row p-2 m-2">
-              <div className="col-8 headerstyle p-2">User in queue: 3</div>
+              <div className="col-8 headerstyle p-2">
+                User in queue: {queueCount}
+              </div>
               <div className="col-4 p-2"></div>
             </div>
             <div className="row p-2 m-2">
@@ -46,38 +100,7 @@ class Queue extends Component {
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Lucas Wong</td>
-                    <td>2020-40-05 17:38:25</td>
-                    <td>
-                      <Button color="danger" onClick={this.toggleModal}>
-                        <span className="fa fa-times"></span>
-                      </Button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Justin Ngu</td>
-                    <td>2020-40-05 17:38:25</td>
-                    <td>
-                      <Button color="danger" onClick={this.toggleModal}>
-                        <span className="fa fa-times"></span>
-                      </Button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>Kelvin Pang</td>
-                    <td>2020-40-05 17:38:25</td>
-                    <td>
-                      <Button color="danger" onClick={this.toggleModal}>
-                        <span className="fa fa-times"></span>
-                      </Button>
-                    </td>
-                  </tr>
-                </tbody>
+                <tbody>{QueueList}</tbody>
               </table>
             </div>
             <Modal
@@ -87,19 +110,23 @@ class Queue extends Component {
             >
               <ModalHeader toggle={this.toggleModal}>Remove User</ModalHeader>
               <ModalBody>
-                <Form onSubmit={this.handleLogin}>
+                <Form onSubmit={this.handleRemove}>
                   <FormGroup>
-                    <Label>Remove User From Queue? </Label>
+                    <Label>
+                      Remove {this.state.userSelected} From Queue? Position:
+                      {this.state.posSelected}
+                    </Label>
                   </FormGroup>
                   <Button
                     type="submit"
                     value="submit"
+                    onClick={this.closeModal}
                     color="primary"
                     className="mx-2"
                   >
                     Yes
                   </Button>
-                  <Button type="submit" value="submit" color="danger">
+                  <Button onClick={this.closeModal} color="danger">
                     No
                   </Button>
                 </Form>
@@ -112,4 +139,17 @@ class Queue extends Component {
   }
 }
 
-export default Queue;
+const mapStateToProps = (state) => ({
+  user: state.user,
+  queues: state.queues,
+});
+
+Queue.propTypes = {
+  user: PropTypes.object.isRequired,
+  queues: PropTypes.object.isRequired,
+};
+const mapActionToProps = {
+  getPremiseQueue,
+  removeFromQueue,
+};
+export default connect(mapStateToProps, mapActionToProps)(Queue);
